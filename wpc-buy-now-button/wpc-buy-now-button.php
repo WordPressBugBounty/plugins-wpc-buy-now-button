@@ -3,21 +3,23 @@
 Plugin Name: WPC Buy Now Button for WooCommerce
 Plugin URI: https://wpclever.net/
 Description: WPC Buy Now Button is the ultimate time-saving plugin that helps customers skip the cart page and get redirected right straight to the checkout step.
-Version: 2.1.0
+Version: 2.1.1
 Author: WPClever
 Author URI: https://wpclever.net
 Text Domain: wpc-buy-now-button
 Domain Path: /languages/
 Requires Plugins: woocommerce
 Requires at least: 4.0
-Tested up to: 6.6
+Tested up to: 6.7
 WC requires at least: 3.0
-WC tested up to: 9.3
+WC tested up to: 9.4
+License: GPLv2 or later
+License URI: http://www.gnu.org/licenses/gpl-2.0.html
 */
 
 defined( 'ABSPATH' ) || exit;
 
-! defined( 'WPCBN_VERSION' ) && define( 'WPCBN_VERSION', '2.1.0' );
+! defined( 'WPCBN_VERSION' ) && define( 'WPCBN_VERSION', '2.1.1' );
 ! defined( 'WPCBN_LITE' ) && define( 'WPCBN_LITE', __FILE__ );
 ! defined( 'WPCBN_FILE' ) && define( 'WPCBN_FILE', __FILE__ );
 ! defined( 'WPCBN_URI' ) && define( 'WPCBN_URI', plugin_dir_url( __FILE__ ) );
@@ -36,9 +38,6 @@ if ( ! function_exists( 'wpcbn_init' ) ) {
 	add_action( 'plugins_loaded', 'wpcbn_init', 11 );
 
 	function wpcbn_init() {
-		// load text-domain
-		load_plugin_textdomain( 'wpc-buy-now-button', false, basename( __DIR__ ) . '/languages/' );
-
 		if ( ! function_exists( 'WC' ) || ! version_compare( WC()->version, '3.0', '>=' ) ) {
 			add_action( 'admin_notices', 'wpcbn_notice_wc' );
 
@@ -149,6 +148,9 @@ if ( ! function_exists( 'wpcbn_init' ) ) {
 				}
 
 				function init() {
+					// load text-domain
+					load_plugin_textdomain( 'wpc-buy-now-button', false, basename( WPCBN_DIR ) . '/languages/' );
+
 					// parameter
 					self::$param = apply_filters( 'wpcbn_parameter', ( ! empty( self::$param ) ? sanitize_title( self::$param ) : 'buy-now' ) );
 

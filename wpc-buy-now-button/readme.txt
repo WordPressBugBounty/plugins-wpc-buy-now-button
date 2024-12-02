@@ -3,9 +3,9 @@ Contributors: wpclever
 Donate link: https://wpclever.net
 Tags: woocommerce, wpc, buy-now, quick-buy
 Requires at least: 4.0
-Tested up to: 6.6
-Version: 2.1.0
-Stable tag: 2.1.0
+Tested up to: 6.7
+Version: 2.1.1
+Stable tag: 2.1.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -85,6 +85,10 @@ WPC Buy Now Button for WooCommerce can work with:
 4. Go to WP-admin > WPClever > Buy Now Button to configure
 
 == Changelog ==
+
+= 2.1.1 =
+* Updated: Optimized the code
+* Updated: Compatible with WP 6.7 & Woo 9.4
 
 = 2.1.0 =
 * Updated: Compatible with WP 6.6 & Woo 9.3
