@@ -3,7 +3,7 @@
 Plugin Name: WPC Buy Now Button for WooCommerce
 Plugin URI: https://wpclever.net/
 Description: WPC Buy Now Button is the ultimate time-saving plugin that helps customers skip the cart page and get redirected right straight to the checkout step.
-Version: 2.1.1
+Version: 2.1.2
 Author: WPClever
 Author URI: https://wpclever.net
 Text Domain: wpc-buy-now-button
@@ -12,14 +12,14 @@ Requires Plugins: woocommerce
 Requires at least: 4.0
 Tested up to: 6.7
 WC requires at least: 3.0
-WC tested up to: 9.4
+WC tested up to: 9.7
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 */
 
 defined( 'ABSPATH' ) || exit;
 
-! defined( 'WPCBN_VERSION' ) && define( 'WPCBN_VERSION', '2.1.1' );
+! defined( 'WPCBN_VERSION' ) && define( 'WPCBN_VERSION', '2.1.2' );
 ! defined( 'WPCBN_LITE' ) && define( 'WPCBN_LITE', __FILE__ );
 ! defined( 'WPCBN_FILE' ) && define( 'WPCBN_FILE', __FILE__ );
 ! defined( 'WPCBN_URI' ) && define( 'WPCBN_URI', plugin_dir_url( __FILE__ ) );
@@ -181,80 +181,83 @@ if ( ! function_exists( 'wpcbn_init' ) ) {
 					], WPCBN_VERSION, true );
 				}
 
-				function archive_shortcode( $atts ) {
+				function archive_shortcode( $attrs ) {
 					$output = '';
 
-					$atts = shortcode_atts( [
+					$attrs = shortcode_atts( [
 						'id' => null
-					], $atts, 'wpcbn_btn_archive' );
+					], $attrs, 'wpcbn_btn_archive' );
 
-					if ( ! $atts['id'] ) {
+					if ( ! $attrs['id'] ) {
 						global $product;
 					} else {
-						$product = wc_get_product( $atts['id'] );
+						$product = wc_get_product( $attrs['id'] );
 					}
 
 					if ( $product && self::is_valid_product( $product ) ) {
-						$atts['id'] = $product_id = $product->get_id();
-						$btn_text   = apply_filters( 'wpcbn_btn_archive_text', self::localization( 'button_text', esc_html__( 'Buy now', 'wpc-buy-now-button' ) ), $atts );
-						$btn_class  = apply_filters( 'wpcbn_btn_archive_class', 'wpcbn-btn wpcbn-btn-archive button product_type_simple add_to_cart_button', $atts );
-						$btn_href   = apply_filters( 'wpcbn_redirect', self::get_setting( 'redirect', 'checkout' ) ) === 'cart' ? wc_get_cart_url() : wc_get_checkout_url();
-						$output     .= sprintf( '<a href="%s?' . self::$param . '=%s" data-quantity="1" class="%s" data-product_id="%s" rel="nofollow">%s</a>', esc_url( $btn_href ), esc_attr( $product_id ), esc_attr( $btn_class ), esc_attr( $product_id ), esc_html( $btn_text ) );
+						$attrs['id'] = $product_id = $product->get_id();
+						$btn_text    = apply_filters( 'wpcbn_btn_archive_text', self::localization( 'button_text', esc_html__( 'Buy now', 'wpc-buy-now-button' ) ), $attrs );
+						$btn_class   = apply_filters( 'wpcbn_btn_archive_class', 'wpcbn-btn wpcbn-btn-archive button product_type_simple add_to_cart_button', $attrs );
+						$btn_href    = apply_filters( 'wpcbn_redirect', self::get_setting( 'redirect', 'checkout' ) ) === 'cart' ? wc_get_cart_url() : wc_get_checkout_url();
+						$output      .= sprintf( '<a href="%s?' . self::$param . '=%s" data-quantity="1" class="%s" data-product_id="%s" rel="nofollow">%s</a>', esc_url( $btn_href ), esc_attr( $product_id ), esc_attr( $btn_class ), esc_attr( $product_id ), esc_html( $btn_text ) );
 					}
 
-					return apply_filters( 'wpcbn_btn_archive', $output, $atts );
+					return apply_filters( 'wpcbn_btn_archive', $output, $attrs );
 				}
 
-				function single_shortcode( $atts ) {
+				function single_shortcode( $attrs ) {
 					$output = '';
 
-					$atts = shortcode_atts( [
+					$attrs = shortcode_atts( [
 						'id' => null
-					], $atts, 'wpcbn_btn_single' );
+					], $attrs, 'wpcbn_btn_single' );
 
-					if ( ! $atts['id'] ) {
+					if ( ! $attrs['id'] ) {
 						global $product;
 					} else {
-						$product = wc_get_product( $atts['id'] );
+						$product = wc_get_product( $attrs['id'] );
 					}
 
 					if ( $product && self::is_valid_product( $product, 'single' ) ) {
-						$atts['id'] = $product_id = $product->get_id();
-						$btn_text   = apply_filters( 'wpcbn_btn_single_text', self::localization( 'button_text', esc_html__( 'Buy now', 'wpc-buy-now-button' ) ), $atts );
-						$btn_class  = apply_filters( 'wpcbn_btn_single_class', 'wpcbn-btn wpcbn-btn-single wpcbn-btn-' . $product->get_type() . ' single_add_to_cart_button button alt', $atts );
-						$output     .= sprintf( '<button type="submit" name="' . esc_attr( self::$param ) . '" value="%d" class="%s" data-product_id="%s">%s</button>', esc_attr( $product_id ), esc_attr( $btn_class ), esc_attr( $product_id ), esc_html( $btn_text ) );
+						$attrs['id'] = $product_id = $product->get_id();
+						$btn_text    = apply_filters( 'wpcbn_btn_single_text', self::localization( 'button_text', esc_html__( 'Buy now', 'wpc-buy-now-button' ) ), $attrs );
+						$btn_class   = apply_filters( 'wpcbn_btn_single_class', 'wpcbn-btn wpcbn-btn-single wpcbn-btn-' . $product->get_type() . ' single_add_to_cart_button button alt', $attrs );
+						$output      .= sprintf( '<button type="submit" name="' . esc_attr( self::$param ) . '" value="%d" class="%s" data-product_id="%s">%s</button>', esc_attr( $product_id ), esc_attr( $btn_class ), esc_attr( $product_id ), esc_html( $btn_text ) );
 					}
 
-					return apply_filters( 'wpcbn_btn_single', $output, $atts );
+					return apply_filters( 'wpcbn_btn_single', $output, $attrs );
 				}
 
 				function is_valid_product( $product, $context = 'archive' ) {
-					$valid = false;
-
+					// Early return if product is invalid
 					if ( ! $product || ! is_a( $product, 'WC_Product' ) ) {
-						return false;
+						return apply_filters( 'wpcbn_is_valid_product', false, $product );
 					}
 
-					if ( $context === 'single' ) {
-						if ( $product->is_in_stock() && $product->is_purchasable() ) {
-							$valid = true;
-						}
-					} else {
-						if ( $product->is_type( 'simple' ) && $product->is_in_stock() && $product->is_purchasable() ) {
-							$valid = true;
-						}
+					// Check basic product conditions
+					$is_purchasable = $product->is_purchasable();
+					$is_in_stock    = $product->is_in_stock();
+
+					// If either condition is false, return early
+					if ( ! $is_purchasable || ! $is_in_stock ) {
+						return apply_filters( 'wpcbn_is_valid_product', false, $product );
 					}
 
-					// check cats
+					// Check product type for non-single context
+					if ( $context !== 'single' && ! $product->is_type( 'simple' ) ) {
+						return apply_filters( 'wpcbn_is_valid_product', false, $product );
+					}
+
+					// Check categories
 					$selected_cats = self::get_setting( 'cats', [] );
 
-					if ( ! empty( $selected_cats ) && ( $selected_cats[0] !== '0' ) ) {
+					if ( ! empty( $selected_cats ) && $selected_cats[0] !== '0' ) {
 						if ( ! has_term( $selected_cats, 'product_cat', $product->get_id() ) ) {
-							$valid = false;
+							return apply_filters( 'wpcbn_is_valid_product', false, $product );
 						}
 					}
 
-					return apply_filters( 'wpcbn_is_valid_product', $valid, $product );
+					return apply_filters( 'wpcbn_is_valid_product', true, $product );
 				}
 
 				function product_class( $classes, $product ) {
@@ -325,9 +328,12 @@ if ( ! function_exists( 'wpcbn_init' ) ) {
                             <p>
 								<?php printf( /* translators: stars */ esc_html__( 'Thank you for using our plugin! If you are satisfied, please reward it a full five-star %s rating.', 'wpc-buy-now-button' ), '<span style="color:#ffb900">&#9733;&#9733;&#9733;&#9733;&#9733;</span>' ); ?>
                                 <br/>
-                                <a href="<?php echo esc_url( WPCBN_REVIEWS ); ?>" target="_blank"><?php esc_html_e( 'Reviews', 'wpc-buy-now-button' ); ?></a> |
-                                <a href="<?php echo esc_url( WPCBN_CHANGELOG ); ?>" target="_blank"><?php esc_html_e( 'Changelog', 'wpc-buy-now-button' ); ?></a> |
-                                <a href="<?php echo esc_url( WPCBN_DISCUSSION ); ?>" target="_blank"><?php esc_html_e( 'Discussion', 'wpc-buy-now-button' ); ?></a>
+                                <a href="<?php echo esc_url( WPCBN_REVIEWS ); ?>"
+                                   target="_blank"><?php esc_html_e( 'Reviews', 'wpc-buy-now-button' ); ?></a> |
+                                <a href="<?php echo esc_url( WPCBN_CHANGELOG ); ?>"
+                                   target="_blank"><?php esc_html_e( 'Changelog', 'wpc-buy-now-button' ); ?></a> |
+                                <a href="<?php echo esc_url( WPCBN_DISCUSSION ); ?>"
+                                   target="_blank"><?php esc_html_e( 'Discussion', 'wpc-buy-now-button' ); ?></a>
                             </p>
                         </div>
 						<?php if ( isset( $_GET['settings-updated'] ) && $_GET['settings-updated'] ) { ?>
@@ -337,16 +343,21 @@ if ( ! function_exists( 'wpcbn_init' ) ) {
 						<?php } ?>
                         <div class="wpclever_settings_page_nav">
                             <h2 class="nav-tab-wrapper">
-                                <a href="<?php echo esc_url( admin_url( 'admin.php?page=wpclever-wpcbn&tab=settings' ) ); ?>" class="<?php echo esc_attr( $active_tab === 'settings' ? 'nav-tab nav-tab-active' : 'nav-tab' ); ?>">
+                                <a href="<?php echo esc_url( admin_url( 'admin.php?page=wpclever-wpcbn&tab=settings' ) ); ?>"
+                                   class="<?php echo esc_attr( $active_tab === 'settings' ? 'nav-tab nav-tab-active' : 'nav-tab' ); ?>">
 									<?php esc_html_e( 'Settings', 'wpc-buy-now-button' ); ?>
                                 </a>
-                                <a href="<?php echo esc_url( admin_url( 'admin.php?page=wpclever-wpcbn&tab=localization' ) ); ?>" class="<?php echo esc_attr( $active_tab === 'localization' ? 'nav-tab nav-tab-active' : 'nav-tab' ); ?>">
+                                <a href="<?php echo esc_url( admin_url( 'admin.php?page=wpclever-wpcbn&tab=localization' ) ); ?>"
+                                   class="<?php echo esc_attr( $active_tab === 'localization' ? 'nav-tab nav-tab-active' : 'nav-tab' ); ?>">
 									<?php esc_html_e( 'Localization', 'wpc-buy-now-button' ); ?>
                                 </a>
-                                <a href="<?php echo esc_url( admin_url( 'admin.php?page=wpclever-wpcbn&tab=premium' ) ); ?>" class="<?php echo esc_attr( $active_tab === 'premium' ? 'nav-tab nav-tab-active' : 'nav-tab' ); ?>" style="color: #c9356e">
+                                <a href="<?php echo esc_url( admin_url( 'admin.php?page=wpclever-wpcbn&tab=premium' ) ); ?>"
+                                   class="<?php echo esc_attr( $active_tab === 'premium' ? 'nav-tab nav-tab-active' : 'nav-tab' ); ?>"
+                                   style="color: #c9356e">
 									<?php esc_html_e( 'Premium Version', 'wpc-buy-now-button' ); ?>
                                 </a>
-                                <a href="<?php echo esc_url( admin_url( 'admin.php?page=wpclever-kit' ) ); ?>" class="nav-tab">
+                                <a href="<?php echo esc_url( admin_url( 'admin.php?page=wpclever-kit' ) ); ?>"
+                                   class="nav-tab">
 									<?php esc_html_e( 'Essential Kit', 'wpc-buy-now-button' ); ?>
                                 </a>
                             </h2>
@@ -398,7 +409,9 @@ if ( ! function_exists( 'wpcbn_init' ) ) {
                                             <th><?php esc_html_e( 'Parameter', 'wpc-buy-now-button' ); ?></th>
                                             <td>
                                                 <label>
-                                                    <input type="text" name="wpcbn_settings[parameter]" placeholder="buy-now" value="<?php echo self::get_setting( 'parameter' ); ?>"/>
+                                                    <input type="text" name="wpcbn_settings[parameter]"
+                                                           placeholder="buy-now"
+                                                           value="<?php echo self::get_setting( 'parameter' ); ?>"/>
                                                 </label>
                                                 <span class="description"><?php printf( /* translators: parameter */ esc_html__( 'Parameter for the Buy Now button or link. Default %s', 'wpc-buy-now-button' ), '<code>buy-now</code>' ); ?></span>
                                             </td>
@@ -456,14 +469,20 @@ if ( ! function_exists( 'wpcbn_init' ) ) {
                                                 <p class="description"><?php esc_html_e( 'Choose action after doing buy now.', 'wpc-buy-now-button' ); ?></p>
 												<?php $redirect = self::get_setting( 'redirect', 'checkout' ); ?>
                                                 <label>
-                                                    <select name="wpcbn_settings[redirect]" class="wpcbn_redirect" style="float: left">
+                                                    <select name="wpcbn_settings[redirect]" class="wpcbn_redirect"
+                                                            style="float: left">
                                                         <option value="checkout" <?php selected( $redirect, 'checkout' ); ?>><?php esc_html_e( 'Redirect to Checkout page', 'wpc-buy-now-button' ); ?></option>
                                                         <option value="cart" <?php selected( $redirect, 'cart' ); ?>><?php esc_html_e( 'Redirect to Cart page', 'wpc-buy-now-button' ); ?></option>
                                                         <option value="custom" <?php selected( $redirect, 'custom' ); ?>><?php esc_html_e( 'Redirect to Custom page', 'wpc-buy-now-button' ); ?></option>
-                                                        <option value="instant_checkout" <?php selected( $redirect, 'instant_checkout' ); ?> disabled><?php esc_html_e( 'Open Instant Checkout popup (premium)', 'wpc-buy-now-button' ); ?></option>
-                                                        <option value="woofc" <?php selected( $redirect, 'woofc' ); ?> disabled><?php esc_html_e( 'Open WPC Fly Cart popup (premium)', 'wpc-buy-now-button' ); ?></option>
+                                                        <option value="instant_checkout" <?php selected( $redirect, 'instant_checkout' ); ?>
+                                                                disabled><?php esc_html_e( 'Open Instant Checkout popup (premium)', 'wpc-buy-now-button' ); ?></option>
+                                                        <option value="woofc" <?php selected( $redirect, 'woofc' ); ?>
+                                                                disabled><?php esc_html_e( 'Open WPC Fly Cart popup (premium)', 'wpc-buy-now-button' ); ?></option>
                                                     </select> </label> <label>
-                                                    <input name="wpcbn_settings[redirect_custom]" type="url" class="regular-text wpcbn_hide_if_redirect wpcbn_show_if_redirect_custom" value="<?php echo esc_url( self::get_setting( 'redirect_custom' ) ); ?>" placeholder="https://"/>
+                                                    <input name="wpcbn_settings[redirect_custom]" type="url"
+                                                           class="regular-text wpcbn_hide_if_redirect wpcbn_show_if_redirect_custom"
+                                                           value="<?php echo esc_url( self::get_setting( 'redirect_custom' ) ); ?>"
+                                                           placeholder="https://"/>
                                                 </label>
                                             </td>
                                         </tr>
@@ -472,7 +491,8 @@ if ( ! function_exists( 'wpcbn_init' ) ) {
                                             <td>
                                                 <p style="color: #c9356e">
                                                     This feature is only available on the Premium Version. Click
-                                                    <a href="https://wpclever.net/downloads/wpc-buy-now-button?utm_source=pro&utm_medium=wpcbn&utm_campaign=wporg" target="_blank">here</a> to buy, just $29.
+                                                    <a href="https://wpclever.net/downloads/wpc-buy-now-button?utm_source=pro&utm_medium=wpcbn&utm_campaign=wporg"
+                                                       target="_blank">here</a> to buy, just $29.
                                                 </p>
                                             </td>
                                         </tr>
@@ -520,7 +540,10 @@ if ( ! function_exists( 'wpcbn_init' ) ) {
                                             <th><?php esc_html_e( 'Button text', 'wpc-buy-now-button' ); ?></th>
                                             <td>
                                                 <label>
-                                                    <input type="text" class="regular-text" name="wpcbn_localization[button_text]" value="<?php echo esc_attr( self::localization( 'button_text' ) ); ?>" placeholder="<?php esc_attr_e( 'Buy now', 'wpc-buy-now-button' ); ?>"/>
+                                                    <input type="text" class="regular-text"
+                                                           name="wpcbn_localization[button_text]"
+                                                           value="<?php echo esc_attr( self::localization( 'button_text' ) ); ?>"
+                                                           placeholder="<?php esc_attr_e( 'Buy now', 'wpc-buy-now-button' ); ?>"/>
                                                 </label>
                                             </td>
                                         </tr>
@@ -534,7 +557,10 @@ if ( ! function_exists( 'wpcbn_init' ) ) {
                                             <th><?php esc_html_e( 'Heading', 'wpc-buy-now-button' ); ?></th>
                                             <td>
                                                 <label>
-                                                    <input type="text" class="regular-text" name="wpcbn_localization[instant_checkout_heading]" value="<?php echo esc_attr( self::localization( 'instant_checkout_heading' ) ); ?>" placeholder="<?php esc_attr_e( 'Checkout', 'wpc-buy-now-button' ); ?>"/>
+                                                    <input type="text" class="regular-text"
+                                                           name="wpcbn_localization[instant_checkout_heading]"
+                                                           value="<?php echo esc_attr( self::localization( 'instant_checkout_heading' ) ); ?>"
+                                                           placeholder="<?php esc_attr_e( 'Checkout', 'wpc-buy-now-button' ); ?>"/>
                                                 </label>
                                             </td>
                                         </tr>
@@ -542,7 +568,10 @@ if ( ! function_exists( 'wpcbn_init' ) ) {
                                             <th><?php esc_html_e( 'Close', 'wpc-buy-now-button' ); ?></th>
                                             <td>
                                                 <label>
-                                                    <input type="text" class="regular-text" name="wpcbn_localization[instant_checkout_close]" value="<?php echo esc_attr( self::localization( 'instant_checkout_close' ) ); ?>" placeholder="<?php esc_attr_e( 'Close', 'wpc-buy-now-button' ); ?>"/>
+                                                    <input type="text" class="regular-text"
+                                                           name="wpcbn_localization[instant_checkout_close]"
+                                                           value="<?php echo esc_attr( self::localization( 'instant_checkout_close' ) ); ?>"
+                                                           placeholder="<?php esc_attr_e( 'Close', 'wpc-buy-now-button' ); ?>"/>
                                                 </label>
                                             </td>
                                         </tr>
@@ -556,7 +585,8 @@ if ( ! function_exists( 'wpcbn_init' ) ) {
 							<?php } elseif ( $active_tab === 'premium' ) { ?>
                                 <div class="wpclever_settings_page_content_text">
                                     <p>Get the Premium Version just $29!
-                                        <a href="https://wpclever.net/downloads/wpc-buy-now-button?utm_source=pro&utm_medium=wpcbn&utm_campaign=wporg" target="_blank">https://wpclever.net/downloads/wpc-buy-now-button</a>
+                                        <a href="https://wpclever.net/downloads/wpc-buy-now-button?utm_source=pro&utm_medium=wpcbn&utm_campaign=wporg"
+                                           target="_blank">https://wpclever.net/downloads/wpc-buy-now-button</a>
                                     </p>
                                     <p><strong>Extra features for Premium Version:</strong></p>
                                     <ul style="margin-bottom: 0">
@@ -573,13 +603,17 @@ if ( ! function_exists( 'wpcbn_init' ) ) {
                             </div>
                             <div class="wpclever_settings_page_suggestion_content">
                                 <div>
-                                    To display custom engaging real-time messages on any wished positions, please install
-                                    <a href="https://wordpress.org/plugins/wpc-smart-messages/" target="_blank">WPC Smart Messages</a> plugin. It's free!
+                                    To display custom engaging real-time messages on any wished positions, please
+                                    install
+                                    <a href="https://wordpress.org/plugins/wpc-smart-messages/" target="_blank">WPC
+                                        Smart Messages</a> plugin. It's free!
                                 </div>
                                 <div>
                                     Wanna save your precious time working on variations? Try our brand-new free plugin
-                                    <a href="https://wordpress.org/plugins/wpc-variation-bulk-editor/" target="_blank">WPC Variation Bulk Editor</a> and
-                                    <a href="https://wordpress.org/plugins/wpc-variation-duplicator/" target="_blank">WPC Variation Duplicator</a>.
+                                    <a href="https://wordpress.org/plugins/wpc-variation-bulk-editor/" target="_blank">WPC
+                                        Variation Bulk Editor</a> and
+                                    <a href="https://wordpress.org/plugins/wpc-variation-duplicator/" target="_blank">WPC
+                                        Variation Duplicator</a>.
                                 </div>
                             </div>
                         </div>
@@ -596,54 +630,72 @@ if ( ! function_exists( 'wpcbn_init' ) ) {
 				}
 
 				function handle_buy_now() {
+					// Early return if required parameter is missing
 					if ( ! isset( $_REQUEST[ self::$param ] ) ) {
 						return false;
 					}
 
-					$product_id   = absint( $_REQUEST[ self::$param ] ?? 0 );
+					// Sanitize and validate input parameters
+					$product_id = absint( $_REQUEST[ self::$param ] ?? 0 );
+					if ( ! $product_id ) {
+						return null;
+					}
+
+					// Extract and sanitize other parameters
 					$quantity     = floatval( $_REQUEST['quantity'] ?? 1 );
 					$variation_id = absint( $_REQUEST['variation_id'] ?? 0 );
-					$variation    = [];
 
-					foreach ( $_REQUEST as $name => $value ) {
-						if ( str_starts_with( $name, 'attribute_' ) ) {
-							$variation[ $name ] = $value;
-						}
+					// More efficient variation attributes collection
+					$variation = array_filter(
+						$_REQUEST,
+						function ( $value, $key ) {
+							return str_starts_with( $key, 'attribute_' ) ? $value : null;
+						},
+						ARRAY_FILTER_USE_BOTH
+					);
+
+					// Get cart instance once
+					$cart = WC()->cart;
+
+					// Reset cart if needed
+					if ( self::get_setting( 'reset_cart', 'no' ) === 'yes' ) {
+						$cart->empty_cart();
 					}
 
-					if ( $product_id ) {
-						if ( self::get_setting( 'reset_cart', 'no' ) === 'yes' ) {
-							WC()->cart->empty_cart();
-						}
+					// Add product to cart
+					$cart->add_to_cart(
+						$product_id,
+						$quantity,
+						$variation_id ?: 0,
+						$variation_id ? $variation : []
+					);
 
-						if ( $variation_id ) {
-							WC()->cart->add_to_cart( $product_id, $quantity, $variation_id, $variation );
-						} else {
-							WC()->cart->add_to_cart( $product_id, $quantity );
-						}
+					// Determine redirect URL
+					$redirect = $this->get_redirect_url();
 
-						switch ( apply_filters( 'wpcbn_redirect', self::get_setting( 'redirect', 'checkout' ) ) ) {
-							case 'checkout':
-								$redirect = wc_get_checkout_url();
-								break;
-							case 'cart':
-								$redirect = wc_get_cart_url();
-								break;
-							default:
-								$redirect = self::get_setting( 'redirect_custom', '/' );
-						}
+					wp_safe_redirect( $redirect );
+					exit;
+				}
 
-						$redirect = esc_url( apply_filters( 'wpcbn_redirect_url', $redirect ) );
+				/**
+				 * Helper method to determine redirect URL
+				 * @return string
+				 */
+				private function get_redirect_url() {
+					$redirect_type = apply_filters(
+						'wpcbn_redirect',
+						self::get_setting( 'redirect', 'checkout' )
+					);
 
-						if ( empty( $redirect ) ) {
-							$redirect = '/';
-						}
+					$redirect = match ( $redirect_type ) {
+						'checkout' => wc_get_checkout_url(),
+						'cart' => wc_get_cart_url(),
+						default => self::get_setting( 'redirect_custom', '/' )
+					};
 
-						wp_safe_redirect( $redirect );
-						exit;
-					}
+					$redirect = esc_url( apply_filters( 'wpcbn_redirect_url', $redirect ) );
 
-					return null;
+					return empty( $redirect ) ? '/' : $redirect;
 				}
 
 				function ignore_form_data( $form_data ) {
@@ -653,28 +705,11 @@ if ( ! function_exists( 'wpcbn_init' ) ) {
 				}
 
 				function add_to_cart_redirect( $url ) {
-					if ( ! empty( $_REQUEST[ self::$param ] ) ) {
-						switch ( apply_filters( 'wpcbn_redirect', self::get_setting( 'redirect', 'checkout' ) ) ) {
-							case 'checkout':
-								$redirect = wc_get_checkout_url();
-								break;
-							case 'cart':
-								$redirect = wc_get_cart_url();
-								break;
-							default:
-								$redirect = self::get_setting( 'redirect_custom', '/' );
-						}
-
-						$redirect = esc_url( apply_filters( 'wpcbn_redirect_url', $redirect ) );
-
-						if ( empty( $redirect ) ) {
-							$redirect = '/';
-						}
-
-						return $redirect;
+					if ( empty( $_REQUEST[ self::$param ] ) ) {
+						return $url;
 					}
 
-					return $url;
+					return $this->get_redirect_url();
 				}
 
 				function dropdown_cats_multiple( $output, $r ) {
