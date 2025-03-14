@@ -3,7 +3,7 @@
 Plugin Name: WPC Buy Now Button for WooCommerce
 Plugin URI: https://wpclever.net/
 Description: WPC Buy Now Button is the ultimate time-saving plugin that helps customers skip the cart page and get redirected right straight to the checkout step.
-Version: 2.1.2
+Version: 2.1.3
 Author: WPClever
 Author URI: https://wpclever.net
 Text Domain: wpc-buy-now-button
@@ -19,7 +19,7 @@ License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
 defined( 'ABSPATH' ) || exit;
 
-! defined( 'WPCBN_VERSION' ) && define( 'WPCBN_VERSION', '2.1.2' );
+! defined( 'WPCBN_VERSION' ) && define( 'WPCBN_VERSION', '2.1.3' );
 ! defined( 'WPCBN_LITE' ) && define( 'WPCBN_LITE', __FILE__ );
 ! defined( 'WPCBN_FILE' ) && define( 'WPCBN_FILE', __FILE__ );
 ! defined( 'WPCBN_URI' ) && define( 'WPCBN_URI', plugin_dir_url( __FILE__ ) );
@@ -194,7 +194,7 @@ if ( ! function_exists( 'wpcbn_init' ) ) {
 						$product = wc_get_product( $attrs['id'] );
 					}
 
-					if ( $product && self::is_valid_product( $product ) ) {
+					if ( $product && self::is_valid_product( $product, 'archive' ) ) {
 						$attrs['id'] = $product_id = $product->get_id();
 						$btn_text    = apply_filters( 'wpcbn_btn_archive_text', self::localization( 'button_text', esc_html__( 'Buy now', 'wpc-buy-now-button' ) ), $attrs );
 						$btn_class   = apply_filters( 'wpcbn_btn_archive_class', 'wpcbn-btn wpcbn-btn-archive button product_type_simple add_to_cart_button', $attrs );
@@ -231,7 +231,7 @@ if ( ! function_exists( 'wpcbn_init' ) ) {
 				function is_valid_product( $product, $context = 'archive' ) {
 					// Early return if product is invalid
 					if ( ! $product || ! is_a( $product, 'WC_Product' ) ) {
-						return apply_filters( 'wpcbn_is_valid_product', false, $product );
+						return apply_filters( 'wpcbn_is_valid_product', false, $product, $context );
 					}
 
 					// Check basic product conditions
@@ -240,12 +240,7 @@ if ( ! function_exists( 'wpcbn_init' ) ) {
 
 					// If either condition is false, return early
 					if ( ! $is_purchasable || ! $is_in_stock ) {
-						return apply_filters( 'wpcbn_is_valid_product', false, $product );
-					}
-
-					// Check product type for non-single context
-					if ( $context !== 'single' && ! $product->is_type( 'simple' ) ) {
-						return apply_filters( 'wpcbn_is_valid_product', false, $product );
+						return apply_filters( 'wpcbn_is_valid_product', false, $product, $context );
 					}
 
 					// Check categories
@@ -253,18 +248,16 @@ if ( ! function_exists( 'wpcbn_init' ) ) {
 
 					if ( ! empty( $selected_cats ) && $selected_cats[0] !== '0' ) {
 						if ( ! has_term( $selected_cats, 'product_cat', $product->get_id() ) ) {
-							return apply_filters( 'wpcbn_is_valid_product', false, $product );
+							return apply_filters( 'wpcbn_is_valid_product', false, $product, $context );
 						}
 					}
 
-					return apply_filters( 'wpcbn_is_valid_product', true, $product );
+					return apply_filters( 'wpcbn_is_valid_product', true, $product, $context );
 				}
 
 				function product_class( $classes, $product ) {
-					if ( self::get_setting( 'hide_atc', 'no' ) === 'yes' ) {
-						if ( $product && self::is_valid_product( $product ) ) {
-							$classes[] = 'wpcbn-hide-atc';
-						}
+					if ( ( self::get_setting( 'hide_atc', 'no' ) === 'yes' ) && $product && self::is_valid_product( $product ) ) {
+						$classes[] = 'wpcbn-hide-atc';
 					}
 
 					return $classes;
