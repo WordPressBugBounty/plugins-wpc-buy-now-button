@@ -3,7 +3,7 @@
 Plugin Name: WPC Buy Now Button for WooCommerce
 Plugin URI: https://wpclever.net/
 Description: WPC Buy Now Button is the ultimate time-saving plugin that helps customers skip the cart page and get redirected right straight to the checkout step.
-Version: 2.1.3
+Version: 2.1.4
 Author: WPClever
 Author URI: https://wpclever.net
 Text Domain: wpc-buy-now-button
@@ -19,7 +19,7 @@ License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
 defined( 'ABSPATH' ) || exit;
 
-! defined( 'WPCBN_VERSION' ) && define( 'WPCBN_VERSION', '2.1.3' );
+! defined( 'WPCBN_VERSION' ) && define( 'WPCBN_VERSION', '2.1.4' );
 ! defined( 'WPCBN_LITE' ) && define( 'WPCBN_LITE', __FILE__ );
 ! defined( 'WPCBN_FILE' ) && define( 'WPCBN_FILE', __FILE__ );
 ! defined( 'WPCBN_URI' ) && define( 'WPCBN_URI', plugin_dir_url( __FILE__ ) );
@@ -680,11 +680,16 @@ if ( ! function_exists( 'wpcbn_init' ) ) {
 						self::get_setting( 'redirect', 'checkout' )
 					);
 
-					$redirect = match ( $redirect_type ) {
-						'checkout' => wc_get_checkout_url(),
-						'cart' => wc_get_cart_url(),
-						default => self::get_setting( 'redirect_custom', '/' )
-					};
+					switch ( $redirect_type ) {
+						case 'checkout':
+							$redirect = wc_get_checkout_url();
+							break;
+						case 'cart':
+							$redirect = wc_get_cart_url();
+							break;
+						default:
+							$redirect = self::get_setting( 'redirect_custom', '/' );
+					}
 
 					$redirect = esc_url( apply_filters( 'wpcbn_redirect_url', $redirect ) );
 
