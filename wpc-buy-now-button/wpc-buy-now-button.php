@@ -3,7 +3,7 @@
 Plugin Name: WPC Buy Now Button for WooCommerce
 Plugin URI: https://wpclever.net/
 Description: WPC Buy Now Button is the ultimate time-saving plugin that helps customers skip the cart page and get redirected right straight to the checkout step.
-Version: 2.2.1
+Version: 2.2.2
 Author: WPClever
 Author URI: https://wpclever.net
 Text Domain: wpc-buy-now-button
@@ -12,14 +12,14 @@ Requires Plugins: woocommerce
 Requires at least: 4.0
 Tested up to: 6.9
 WC requires at least: 3.0
-WC tested up to: 10.6
+WC tested up to: 10.7
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 */
 
 defined( 'ABSPATH' ) || exit;
 
-! defined( 'WPCBN_VERSION' ) && define( 'WPCBN_VERSION', '2.2.1' );
+! defined( 'WPCBN_VERSION' ) && define( 'WPCBN_VERSION', '2.2.2' );
 ! defined( 'WPCBN_LITE' ) && define( 'WPCBN_LITE', __FILE__ );
 ! defined( 'WPCBN_FILE' ) && define( 'WPCBN_FILE', __FILE__ );
 ! defined( 'WPCBN_URI' ) && define( 'WPCBN_URI', plugin_dir_url( __FILE__ ) );
@@ -28,12 +28,14 @@ defined( 'ABSPATH' ) || exit;
 ! defined( 'WPCBN_REVIEWS' ) && define( 'WPCBN_REVIEWS', 'https://wordpress.org/support/plugin/wpc-buy-now-button/reviews/' );
 ! defined( 'WPCBN_CHANGELOG' ) && define( 'WPCBN_CHANGELOG', 'https://wordpress.org/plugins/wpc-buy-now-button/#developers' );
 ! defined( 'WPCBN_DISCUSSION' ) && define( 'WPCBN_DISCUSSION', 'https://wordpress.org/support/plugin/wpc-buy-now-button' );
-! defined( 'WPC_URI' ) && define( 'WPC_URI', WPCBN_URI );
 
-include 'includes/log/wpc-log.php';
-include 'includes/dashboard/wpc-dashboard.php';
-include 'includes/kit/wpc-kit.php';
-include 'includes/hpos.php';
+// WPC Core
+require_once __DIR__ . '/includes/wpc-core/wpc-core.php';
+wpc_core_register( [
+        'file'    => __FILE__,
+        'version' => WPCBN_VERSION,
+        'prefix'  => 'wpcbn',
+] );
 
 if ( ! function_exists( 'wpcbn_init' ) ) {
     add_action( 'plugins_loaded', 'wpcbn_init', 11 );
@@ -619,7 +621,7 @@ if ( ! function_exists( 'wpcbn_init' ) ) {
                                                     submit_button( '', 'primary', 'submit', false );
 
                                                     if ( function_exists( 'wpc_last_saved' ) ) {
-                                                        wpc_last_saved( get_option( 'wpcbn_localization', [] ) );;
+                                                        wpc_last_saved( get_option( 'wpcbn_localization', [] ) );
                                                     }
                                                     ?>
                                                 </div>
