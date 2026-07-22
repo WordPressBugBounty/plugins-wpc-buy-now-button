@@ -3,7 +3,7 @@
 Plugin Name: WPC Buy Now Button for WooCommerce
 Plugin URI: https://wpclever.net/
 Description: WPC Buy Now Button is the ultimate time-saving plugin that helps customers skip the cart page and get redirected right straight to the checkout step.
-Version: 2.2.3
+Version: 2.2.4
 Author: WPClever
 Author URI: https://wpclever.net
 Text Domain: wpc-buy-now-button
@@ -12,14 +12,14 @@ Requires Plugins: woocommerce
 Requires at least: 5.9
 Tested up to: 7.0
 WC requires at least: 3.0
-WC tested up to: 10.8
+WC tested up to: 10.9
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 */
 
 defined( 'ABSPATH' ) || exit;
 
-! defined( 'WPCBN_VERSION' ) && define( 'WPCBN_VERSION', '2.2.3' );
+! defined( 'WPCBN_VERSION' ) && define( 'WPCBN_VERSION', '2.2.4' );
 ! defined( 'WPCBN_LITE' ) && define( 'WPCBN_LITE', __FILE__ );
 ! defined( 'WPCBN_FILE' ) && define( 'WPCBN_FILE', __FILE__ );
 ! defined( 'WPCBN_URI' ) && define( 'WPCBN_URI', plugin_dir_url( __FILE__ ) );
@@ -337,7 +337,7 @@ if ( ! function_exists( 'wpcbn_init' ) ) {
                 }
 
                 function admin_menu_content() {
-                    $active_tab = sanitize_key( $_GET['tab'] ?? 'settings' ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+                    $active_tab = sanitize_key( wp_unslash( $_GET['tab'] ?? 'settings' ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
                     ?>
                     <div class="wpclever_settings_page wrap">
                         <div class="wpclever_settings_page_header">
@@ -361,7 +361,7 @@ if ( ! function_exists( 'wpcbn_init' ) ) {
                             </div>
                         </div>
                         <h2></h2>
-                        <?php if ( isset( $_GET['settings-updated'] ) && sanitize_key( wp_unslash( $_GET['settings-updated'] ) ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended ?>
+                        <?php if ( isset( $_GET['settings-updated'] ) && sanitize_key( wp_unslash( $_GET['settings-updated'] ?? '' ) ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended ?>
                             <div class="notice notice-success is-dismissible">
                                 <p><?php esc_html_e( 'Settings updated.', 'wpc-buy-now-button' ); ?></p>
                             </div>
@@ -687,7 +687,7 @@ if ( ! function_exists( 'wpcbn_init' ) ) {
                     }
 
                     // Verify nonce only for POST requests (single product form) to avoid cache issues with GET links
-                    if ( 'POST' === $_SERVER['REQUEST_METHOD'] ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+                    if ( isset( $_SERVER['REQUEST_METHOD'] ) && 'POST' === $_SERVER['REQUEST_METHOD'] ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
                         if ( apply_filters( 'wpcbn_disable_nonce_check', false, 'handle_buy_now' ) === false ) {
                             if ( ! isset( $_POST['wpcbn_nonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $_POST['wpcbn_nonce'] ) ), 'wpcbn-security' ) ) {
                                 return false;
@@ -702,8 +702,8 @@ if ( ! function_exists( 'wpcbn_init' ) ) {
                     }
 
                     // Extract and sanitize other parameters
-                    $quantity     = floatval( $_REQUEST['quantity'] ?? 1 ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-                    $variation_id = absint( $_REQUEST['variation_id'] ?? 0 ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+                    $quantity     = floatval( wp_unslash( $_REQUEST['quantity'] ?? 1 ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+                    $variation_id = absint( wp_unslash( $_REQUEST['variation_id'] ?? 0 ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 
                     // More efficient variation attributes collection
                     $variation = array_filter(
