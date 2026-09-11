@@ -3,28 +3,27 @@
 Plugin Name: WPC Buy Now Button for WooCommerce
 Plugin URI: https://wpclever.net/
 Description: WPC Buy Now Button is the ultimate time-saving plugin that helps customers skip the cart page and get redirected right straight to the checkout step.
-Version: 2.2.4
 Author: WPClever
 Author URI: https://wpclever.net
 Text Domain: wpc-buy-now-button
 Domain Path: /languages/
 Requires Plugins: woocommerce
+Version: 2.2.5
 Requires at least: 5.9
-Tested up to: 7.0
 WC requires at least: 3.0
-WC tested up to: 10.9
+WC tested up to: 11.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 */
 
 defined( 'ABSPATH' ) || exit;
 
-! defined( 'WPCBN_VERSION' ) && define( 'WPCBN_VERSION', '2.2.4' );
+! defined( 'WPCBN_VERSION' ) && define( 'WPCBN_VERSION', '2.2.5' );
 ! defined( 'WPCBN_LITE' ) && define( 'WPCBN_LITE', __FILE__ );
 ! defined( 'WPCBN_FILE' ) && define( 'WPCBN_FILE', __FILE__ );
 ! defined( 'WPCBN_URI' ) && define( 'WPCBN_URI', plugin_dir_url( __FILE__ ) );
 ! defined( 'WPCBN_DIR' ) && define( 'WPCBN_DIR', plugin_dir_path( __FILE__ ) );
-! defined( 'WPCBN_SUPPORT' ) && define( 'WPCBN_SUPPORT', 'https://wpclever.net/support?utm_source=support&utm_medium=wpcbn&utm_campaign=wporg' );
+! defined( 'WPCBN_SUPPORT' ) && define( 'WPCBN_SUPPORT', 'https://wpclever.net/support/?utm_source=support&utm_medium=wpcbn&utm_campaign=wporg' );
 ! defined( 'WPCBN_REVIEWS' ) && define( 'WPCBN_REVIEWS', 'https://wordpress.org/support/plugin/wpc-buy-now-button/reviews/' );
 ! defined( 'WPCBN_CHANGELOG' ) && define( 'WPCBN_CHANGELOG', 'https://wordpress.org/plugins/wpc-buy-now-button/#developers' );
 ! defined( 'WPCBN_DISCUSSION' ) && define( 'WPCBN_DISCUSSION', 'https://wordpress.org/support/plugin/wpc-buy-now-button' );
